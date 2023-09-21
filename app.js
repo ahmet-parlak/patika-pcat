@@ -39,6 +39,15 @@ app.post('/photos', async (req, res) => {
   await Photo.create(req.body);
   res.redirect('/');
 });
+app.get('/photos/:id', async (req, res) => {
+  await Photo.findById(req.params.id)
+    .then((photo) => {
+      res.render('photo', { photo });
+    })
+    .catch(() => {
+      res.render('404');
+    });
+});
 app.get('*', (req, res) => {
   res.render('404');
 });
