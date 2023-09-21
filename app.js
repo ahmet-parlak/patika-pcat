@@ -30,7 +30,11 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(fileUpload());
-app.use(methodOverride('_method'));
+app.use(
+  methodOverride('_method', {
+    methods: ['GET', 'POST'],
+  })
+);
 
 //ROUTES
 app.get('/', async (req, res) => {
@@ -63,7 +67,6 @@ app.post('/photos', async (req, res) => {
 
   image.mv(path, async (err) => {
     if (err) {
-      console.log('Error:', err);
       return res.status(500).send('image failed to upload.');
     }
     await Photo.create({ ...req.body, image: '/uploads/' + imageName });
@@ -90,7 +93,6 @@ app.get('/photos/:id/edit', async (req, res) => {
     });
 });
 app.put('/photos/:id', async (req, res) => {
-  console.log(req.params.id);
   await Photo.findByIdAndUpdate(req.params.id, req.body)
     .then(() => {
       res.redirect(`/photos/${req.params.id}`);
@@ -99,6 +101,19 @@ app.put('/photos/:id', async (req, res) => {
       res.render('404');
     });
 });
+app.delete('/photos/:id', async (req, res) => {
+  const photo = await Photo.findById(req.params.id, req.body).catch(() => {
+    res.render('404');
+  });
+  if (fs.existsSync(__dirname + '/public' + photo.image)) {
+    fs.unlinkSync(__dirname + '/public' + photo.image);
+  }
+
+  await Photo.deleteOne({ _id: req.params.id });
+
+  res.redirect('/');
+});
+
 app.get('*', (req, res) => {
   res.render('404');
 });

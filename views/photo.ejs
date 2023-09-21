@@ -50,9 +50,9 @@
 												Details</span></button>
 									</div>
 									<div class="mt-3">
-										<button
+										<a href="/photos/<%= photo.id %>?_method=DELETE" onclick="return confirm('Are you sure?')"
 											class="btn btn-danger p-0 tm-btn-animate tm-btn-delete tm-icon-delete"><span>Delete
-												Photo</span></button>
+												Photo</span></a>
 									</div>
 								</div>
 							</div>
