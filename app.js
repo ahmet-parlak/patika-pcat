@@ -40,6 +40,7 @@ app.put('/photos/:id', PhotoController.updatePhoto);
 app.delete('/photos/:id', PhotoController.deletePhoto);
 
 app.get('*', PageController.notFoundPage);
+
 //LISTEN
 const port = 3000;
 app.listen(port, () => {
